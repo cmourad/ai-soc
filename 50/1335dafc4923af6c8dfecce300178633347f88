@@ -1,0 +1,520 @@
+.github/workflows/ci.yml
+  h_0fdda36b8a632b 1-74
+.gitignore
+  h_0fdda36b8a632b 1-19
+LICENSE
+  h_0fdda36b8a632b 1-21
+README.md
+  h_0fdda36b8a632b 1-119
+SECURITY.md
+  h_0fdda36b8a632b 1-43
+agent/aisoc.py
+  h_0fdda36b8a632b 1-1009
+agent/config.py
+  h_0fdda36b8a632b 1-94
+agent/guard.py
+  h_0fdda36b8a632b 1-96
+agent/helpers.py
+  h_0fdda36b8a632b 1-58
+agent/history.py
+  h_0fdda36b8a632b 1-158
+agent/ipc.py
+  h_0fdda36b8a632b 1-48
+agent/nft.py
+  h_0fdda36b8a632b 1-95
+agent/process_helper.py
+  h_0fdda36b8a632b 1-192
+agent/prompt.py
+  h_0fdda36b8a632b 1-45
+agent/test_control.py
+  h_0fdda36b8a632b 1-50
+agent/test_guard.py
+  h_0fdda36b8a632b 1-90
+agent/test_ipc.py
+  h_0fdda36b8a632b 1-52
+agent/test_process_helper.py
+  h_0fdda36b8a632b 1-56
+agent/test_sensor_control_helper.py
+  h_0fdda36b8a632b 1-87
+agent/vpn_helper.py
+  h_0fdda36b8a632b 1-54
+allowlist.txt
+  h_0fdda36b8a632b 1-2
+compose.yml
+  h_0fdda36b8a632b 1-66
+console/.npmrc
+  h_0fdda36b8a632b 1-2
+console/bin/aisocctl
+  h_0fdda36b8a632b 1-453
+console/biome.json
+  h_0fdda36b8a632b 1-33
+console/desktop/aisoc-console.sh
+  h_0fdda36b8a632b 1-6
+console/desktop/main.cjs
+  h_0fdda36b8a632b 1-90
+console/desktop/package.json
+  h_0fdda36b8a632b 1-13
+console/desktop/preload.cjs
+  h_0fdda36b8a632b 1-8
+console/package.json
+  h_0fdda36b8a632b 1-22
+console/pnpm-lock.yaml
+  h_0fdda36b8a632b 1-3915
+console/pnpm-workspace.yaml
+  h_0fdda36b8a632b 1-9
+console/scripts/build-server.mjs
+  h_0fdda36b8a632b 1-44
+console/server/package.json
+  h_0fdda36b8a632b 1-26
+console/server/src/assets.ts
+  h_0fdda36b8a632b 1-240
+console/server/src/assistant/chat.persist.test.ts
+  h_0fdda36b8a632b 1-137
+console/server/src/assistant/chat.test.ts
+  h_0fdda36b8a632b 1-114
+console/server/src/assistant/chat.ts
+  h_0fdda36b8a632b 1-345
+console/server/src/assistant/models.test.ts
+  h_0fdda36b8a632b 1-52
+console/server/src/assistant/models.ts
+  h_0fdda36b8a632b 1-73
+console/server/src/atomic.ts
+  h_0fdda36b8a632b 1-18
+console/server/src/auth.ts
+  h_0fdda36b8a632b 1-339
+console/server/src/bus.ts
+  h_0fdda36b8a632b 1-23
+console/server/src/config.ts
+  h_0fdda36b8a632b 1-6
+console/server/src/control.test.ts
+  h_0fdda36b8a632b 1-112
+console/server/src/control.ts
+  h_0fdda36b8a632b 1-392
+console/server/src/crypto.ts
+  h_0fdda36b8a632b 1-76
+console/server/src/detect/engine.test.ts
+  h_0fdda36b8a632b 1-69
+console/server/src/detect/engine.ts
+  h_0fdda36b8a632b 1-356
+console/server/src/detect/feeds.ts
+  h_0fdda36b8a632b 1-433
+console/server/src/detect/flow.test.ts
+  h_0fdda36b8a632b 1-189
+console/server/src/detect/rules.ts
+  h_0fdda36b8a632b 1-701
+console/server/src/format.test.ts
+  h_0fdda36b8a632b 1-25
+console/server/src/http.ts
+  h_0fdda36b8a632b 1-15
+console/server/src/incidents/correlate.ts
+  h_0fdda36b8a632b 1-306
+console/server/src/incidents/prompt.ts
+  h_0fdda36b8a632b 1-22
+console/server/src/index.ts
+  h_0fdda36b8a632b 1-234
+console/server/src/ingest.ts
+  h_0fdda36b8a632b 1-210
+console/server/src/intel/enrich.ts
+  h_0fdda36b8a632b 1-208
+console/server/src/intel/geo-table.txt
+  h_0fdda36b8a632b 1-15
+console/server/src/intel/geo.test.ts
+  h_0fdda36b8a632b 1-82
+console/server/src/intel/geo.ts
+  h_0fdda36b8a632b 1-234
+console/server/src/lists.ts
+  h_0fdda36b8a632b 1-121
+console/server/src/metrics.ts
+  h_0fdda36b8a632b 1-67
+console/server/src/network/beacon-bridge.ts
+  h_0fdda36b8a632b 1-98
+console/server/src/network/beacon.test.ts
+  h_0fdda36b8a632b 1-217
+console/server/src/network/beacon.ts
+  h_0fdda36b8a632b 1-396
+console/server/src/network/compass.test.ts
+  h_0fdda36b8a632b 1-488
+console/server/src/network/compass.ts
+  h_0fdda36b8a632b 1-715
+console/server/src/network/dns.test.ts
+  h_0fdda36b8a632b 1-123
+console/server/src/network/dns.ts
+  h_0fdda36b8a632b 1-245
+console/server/src/network/repository.ts
+  h_0fdda36b8a632b 1-207
+console/server/src/network/review.test.ts
+  h_0fdda36b8a632b 1-146
+console/server/src/network/review.ts
+  h_0fdda36b8a632b 1-197
+console/server/src/network/state.ts
+  h_0fdda36b8a632b 1-195
+console/server/src/notify/dispatch.ts
+  h_0fdda36b8a632b 1-20
+console/server/src/notify/email.ts
+  h_0fdda36b8a632b 1-26
+console/server/src/notify/oncall.ts
+  h_0fdda36b8a632b 1-269
+console/server/src/notify/telegram.ts
+  h_0fdda36b8a632b 1-56
+console/server/src/paths.ts
+  h_0fdda36b8a632b 1-24
+console/server/src/pentest.persist.test.ts
+  h_0fdda36b8a632b 1-63
+console/server/src/pentest.test.ts
+  h_0fdda36b8a632b 1-113
+console/server/src/pentest.ts
+  h_0fdda36b8a632b 1-569
+console/server/src/projection.ts
+  h_0fdda36b8a632b 1-175
+console/server/src/quarantine.ts
+  h_0fdda36b8a632b 1-79
+console/server/src/remoteaccess/manager.ts
+  h_0fdda36b8a632b 1-312
+console/server/src/reports.ts
+  h_0fdda36b8a632b 1-299
+console/server/src/response/actions.ts
+  h_0fdda36b8a632b 1-562
+console/server/src/response/agent.ts
+  h_0fdda36b8a632b 1-210
+console/server/src/response/guardrails.test.ts
+  h_0fdda36b8a632b 1-48
+console/server/src/response/playbooks.ts
+  h_0fdda36b8a632b 1-106
+console/server/src/response/policy.test.ts
+  h_0fdda36b8a632b 1-9
+console/server/src/response/policy.ts
+  h_0fdda36b8a632b 1-7
+console/server/src/routes/alerts.ts
+  h_0fdda36b8a632b 1-41
+console/server/src/routes/assets.ts
+  h_0fdda36b8a632b 1-62
+console/server/src/routes/assistant.ts
+  h_0fdda36b8a632b 1-127
+console/server/src/routes/catalog.ts
+  h_0fdda36b8a632b 1-62
+console/server/src/routes/compass.ts
+  h_0fdda36b8a632b 1-132
+console/server/src/routes/control.ts
+  h_0fdda36b8a632b 1-147
+console/server/src/routes/core.ts
+  h_0fdda36b8a632b 1-124
+console/server/src/routes/incidents.ts
+  h_0fdda36b8a632b 1-58
+console/server/src/routes/pentest.ts
+  h_0fdda36b8a632b 1-48
+console/server/src/routes/remoteaccess.ts
+  h_0fdda36b8a632b 1-30
+console/server/src/routes/reports.ts
+  h_0fdda36b8a632b 1-40
+console/server/src/routes/response.ts
+  h_0fdda36b8a632b 1-90
+console/server/src/routes/vpn.ts
+  h_0fdda36b8a632b 1-98
+console/server/src/security.test.ts
+  h_0fdda36b8a632b 1-196
+console/server/src/sensor-control.ts
+  h_0fdda36b8a632b 1-97
+console/server/src/services.ts
+  h_0fdda36b8a632b 1-221
+console/server/src/settings.test.ts
+  h_0fdda36b8a632b 1-34
+console/server/src/settings.ts
+  h_0fdda36b8a632b 1-278
+console/server/src/sources/cluster.test.ts
+  h_0fdda36b8a632b 1-229
+console/server/src/sources/cluster.ts
+  h_0fdda36b8a632b 1-232
+console/server/src/sources/eve.ts
+  h_0fdda36b8a632b 1-98
+console/server/src/sources/scenarios.ts
+  h_0fdda36b8a632b 1-589
+console/server/src/sources/seed.ts
+  h_0fdda36b8a632b 1-321
+console/server/src/sources/sensor.test.ts
+  h_0fdda36b8a632b 1-60
+console/server/src/sources/sensor.ts
+  h_0fdda36b8a632b 1-93
+console/server/src/sources/tail.ts
+  h_0fdda36b8a632b 1-93
+console/server/src/static.ts
+  h_0fdda36b8a632b 1-62
+console/server/src/store.ts
+  h_0fdda36b8a632b 1-484
+console/server/src/terminal.test.ts
+  h_0fdda36b8a632b 1-31
+console/server/src/terminal.ts
+  h_0fdda36b8a632b 1-109
+console/server/src/testing/replay-cluster.ts
+  h_0fdda36b8a632b 1-49
+console/server/src/testing/settings-fixture.ts
+  h_0fdda36b8a632b 1-31
+console/server/src/triage/batcher.ts
+  h_0fdda36b8a632b 1-125
+console/server/src/triage/llm.ts
+  h_0fdda36b8a632b 1-799
+console/server/src/triage/pipeline.ts
+  h_0fdda36b8a632b 1-653
+console/server/src/triage/prompt.ts
+  h_0fdda36b8a632b 1-169
+console/server/src/vpn/config-parse.ts
+  h_0fdda36b8a632b 1-169
+console/server/src/vpn/lifecycle.test.ts
+  h_0fdda36b8a632b 1-29
+console/server/src/vpn/lifecycle.ts
+  h_0fdda36b8a632b 1-27
+console/server/src/vpn/manager.ts
+  h_0fdda36b8a632b 1-745
+console/server/src/vpn/profiles.ts
+  h_0fdda36b8a632b 1-80
+console/server/src/vpn/publish.ts
+  h_0fdda36b8a632b 1-19
+console/server/src/vpn/servers.ts
+  h_0fdda36b8a632b 1-271
+console/server/src/vpn/wireguard.test.ts
+  h_0fdda36b8a632b 1-46
+console/server/src/vpn/wireguard.ts
+  h_0fdda36b8a632b 1-189
+console/server/tsconfig.json
+  h_0fdda36b8a632b 1-7
+console/shared/package.json
+  h_0fdda36b8a632b 1-11
+console/shared/src/defaults.ts
+  h_0fdda36b8a632b 1-240
+console/shared/src/flow.ts
+  h_0fdda36b8a632b 1-132
+console/shared/src/format.ts
+  h_0fdda36b8a632b 1-22
+console/shared/src/index.ts
+  h_0fdda36b8a632b 1-6
+console/shared/src/mitre.ts
+  h_0fdda36b8a632b 1-102
+console/shared/src/net.ts
+  h_0fdda36b8a632b 1-73
+console/shared/src/types.ts
+  h_0fdda36b8a632b 1-1464
+console/shared/tsconfig.json
+  h_0fdda36b8a632b 1-4
+console/systemd/aisoc-console-health.service
+  h_0fdda36b8a632b 1-12
+console/systemd/aisoc-console-health.sh
+  h_0fdda36b8a632b 1-23
+console/systemd/aisoc-console-health.timer
+  h_0fdda36b8a632b 1-10
+console/systemd/aisoc-console.service
+  h_0fdda36b8a632b 1-75
+console/tsconfig.base.json
+  h_0fdda36b8a632b 1-17
+console/ui/index.html
+  h_0fdda36b8a632b 1-12
+console/ui/package.json
+  h_0fdda36b8a632b 1-35
+console/ui/src/App.tsx
+  h_0fdda36b8a632b 1-155
+console/ui/src/components/ActivityBar.tsx
+  h_0fdda36b8a632b 1-142
+console/ui/src/components/AssistantPanel.tsx
+  h_0fdda36b8a632b 1-400
+console/ui/src/components/DetailPanel.tsx
+  h_0fdda36b8a632b 1-578
+console/ui/src/components/FlowPath.tsx
+  h_0fdda36b8a632b 1-354
+console/ui/src/components/NotificationCenter.tsx
+  h_0fdda36b8a632b 1-137
+console/ui/src/components/ReadinessChecklist.tsx
+  h_0fdda36b8a632b 1-86
+console/ui/src/components/ServiceTerminal.tsx
+  h_0fdda36b8a632b 1-263
+console/ui/src/components/Sparkline.tsx
+  h_0fdda36b8a632b 1-38
+console/ui/src/components/StatusBar.tsx
+  h_0fdda36b8a632b 1-143
+console/ui/src/components/ThreatMap.tsx
+  h_0fdda36b8a632b 1-458
+console/ui/src/components/Toasts.tsx
+  h_0fdda36b8a632b 1-43
+console/ui/src/components/security.tsx
+  h_0fdda36b8a632b 1-209
+console/ui/src/components/ui/primitives.tsx
+  h_0fdda36b8a632b 1-331
+console/ui/src/index.css
+  h_0fdda36b8a632b 1-139
+console/ui/src/lib/api.ts
+  h_0fdda36b8a632b 1-261
+console/ui/src/lib/apply.test.ts
+  h_0fdda36b8a632b 1-144
+console/ui/src/lib/apply.ts
+  h_0fdda36b8a632b 1-136
+console/ui/src/lib/dossier.ts
+  h_0fdda36b8a632b 1-169
+console/ui/src/lib/utils.ts
+  h_0fdda36b8a632b 1-133
+console/ui/src/main.tsx
+  h_0fdda36b8a632b 1-10
+console/ui/src/store.ts
+  h_0fdda36b8a632b 1-292
+console/ui/src/views/Assets.tsx
+  h_0fdda36b8a632b 1-347
+console/ui/src/views/Dns.tsx
+  h_0fdda36b8a632b 1-257
+console/ui/src/views/Firewall.tsx
+  h_0fdda36b8a632b 1-206
+console/ui/src/views/Incidents.tsx
+  h_0fdda36b8a632b 1-447
+console/ui/src/views/LlmActivity.tsx
+  h_0fdda36b8a632b 1-428
+console/ui/src/views/NetworkCompass.tsx
+  h_0fdda36b8a632b 1-894
+console/ui/src/views/Overview.tsx
+  h_0fdda36b8a632b 1-580
+console/ui/src/views/Pentest.tsx
+  h_0fdda36b8a632b 1-337
+console/ui/src/views/Quarantine.tsx
+  h_0fdda36b8a632b 1-293
+console/ui/src/views/RemoteAccess.tsx
+  h_0fdda36b8a632b 1-328
+console/ui/src/views/Reports.tsx
+  h_0fdda36b8a632b 1-329
+console/ui/src/views/Response.tsx
+  h_0fdda36b8a632b 1-374
+console/ui/src/views/Settings.tsx
+  h_0fdda36b8a632b 1-97
+console/ui/src/views/Traffic.tsx
+  h_0fdda36b8a632b 1-307
+console/ui/src/views/Triage.tsx
+  h_0fdda36b8a632b 1-199
+console/ui/src/views/Vpn.tsx
+  h_0fdda36b8a632b 1-711
+console/ui/src/views/settings/ConsoleSection.tsx
+  h_0fdda36b8a632b 1-16
+console/ui/src/views/settings/CorrelationSection.tsx
+  h_0fdda36b8a632b 1-73
+console/ui/src/views/settings/DetectionSection.tsx
+  h_0fdda36b8a632b 1-76
+console/ui/src/views/settings/EscalationSection.tsx
+  h_0fdda36b8a632b 1-33
+console/ui/src/views/settings/IngestSection.tsx
+  h_0fdda36b8a632b 1-57
+console/ui/src/views/settings/IntelSection.tsx
+  h_0fdda36b8a632b 1-46
+console/ui/src/views/settings/NotificationsSection.tsx
+  h_0fdda36b8a632b 1-54
+console/ui/src/views/settings/OncallSection.tsx
+  h_0fdda36b8a632b 1-283
+console/ui/src/views/settings/RemoteAccessSection.tsx
+  h_0fdda36b8a632b 1-27
+console/ui/src/views/settings/ResponseSection.tsx
+  h_0fdda36b8a632b 1-171
+console/ui/src/views/settings/SiteSection.tsx
+  h_0fdda36b8a632b 1-41
+console/ui/src/views/settings/SmtpSection.tsx
+  h_0fdda36b8a632b 1-87
+console/ui/src/views/settings/TelegramSection.tsx
+  h_0fdda36b8a632b 1-105
+console/ui/src/views/settings/TriageSection.tsx
+  h_0fdda36b8a632b 1-156
+console/ui/src/views/settings/VpnSection.tsx
+  h_0fdda36b8a632b 1-144
+console/ui/src/views/settings/shared.tsx
+  h_0fdda36b8a632b 1-303
+console/ui/tsconfig.json
+  h_0fdda36b8a632b 1-12
+console/ui/vite.config.ts
+  h_0fdda36b8a632b 1-17
+docs/reference/architecture-current.md
+  h_0fdda36b8a632b 1-203
+docs/reference/architecture-target.md
+  h_0fdda36b8a632b 1-470
+docs/reference/attack-lab.md
+  h_0fdda36b8a632b 1-538
+docs/reference/estate-map.md
+  h_0fdda36b8a632b 1-135
+docs/reference/network-compass.md
+  h_0fdda36b8a632b 1-150
+docs/reference/operations.md
+  h_0fdda36b8a632b 1-178
+docs/reference/pentest-plan.md
+  h_0fdda36b8a632b 1-134
+docs/reference/scans/kube-bench-2026-08-25.txt
+  h_0fdda36b8a632b 1-698
+docs/reference/scans/kube-hunter-2026-08-25.txt
+  h_0fdda36b8a632b 1-11
+docs/reference/scans/scanner-report.md
+  h_0fdda36b8a632b 1-675
+docs/reference/security-rollout.md
+  h_0fdda36b8a632b 1-70
+k3s/audit-policy.yaml
+  h_0fdda36b8a632b 1-80
+k3s/kube-bench-job.yaml
+  h_0fdda36b8a632b 1-61
+k3s/kube-hunter-job.yaml
+  h_0fdda36b8a632b 1-17
+scripts/aisoc-audit.rules
+  h_0fdda36b8a632b 1-25
+scripts/aisoc-control.sh
+  h_0fdda36b8a632b 1-268
+scripts/audit_tail.py
+  h_0fdda36b8a632b 1-333
+scripts/build_geo_table.py
+  h_0fdda36b8a632b 1-266
+scripts/cluster_tail.py
+  h_0fdda36b8a632b 1-367
+scripts/daily_digest.py
+  h_0fdda36b8a632b 1-127
+scripts/deploy.sh
+  h_0fdda36b8a632b 1-198
+scripts/eval_tiers.py
+  h_0fdda36b8a632b 1-118
+scripts/notify.py
+  h_0fdda36b8a632b 1-61
+scripts/pihole-resolver.py
+  h_0fdda36b8a632b 1-99
+scripts/sensor-control-helper.py
+  h_0fdda36b8a632b 1-220
+scripts/watchdog.py
+  h_0fdda36b8a632b 1-200
+suricata/conf/threshold.config
+  h_0fdda36b8a632b 1-30
+systemd/aisoc-agent.service
+  h_0fdda36b8a632b 1-64
+systemd/aisoc-cluster-events.service
+  h_0fdda36b8a632b 1-34
+systemd/aisoc-digest.service
+  h_0fdda36b8a632b 1-10
+systemd/aisoc-digest.timer
+  h_0fdda36b8a632b 1-10
+systemd/aisoc-host-events.service
+  h_0fdda36b8a632b 1-24
+systemd/aisoc-pihole-resolver.service
+  h_0fdda36b8a632b 1-42
+systemd/aisoc-process-helper.service
+  h_0fdda36b8a632b 1-35
+systemd/aisoc-rules.service
+  h_0fdda36b8a632b 1-10
+systemd/aisoc-rules.timer
+  h_0fdda36b8a632b 1-10
+systemd/aisoc-sensor-control.service
+  h_0fdda36b8a632b 1-47
+systemd/aisoc-vpn-helper.service
+  h_0fdda36b8a632b 1-25
+systemd/aisoc-watchdog.service
+  h_0fdda36b8a632b 1-11
+systemd/aisoc-watchdog.timer
+  h_0fdda36b8a632b 1-11
+systemd/k3s-audit.conf
+  h_0fdda36b8a632b 1-31
+systemd/logrotate-aisoc
+  h_0fdda36b8a632b 1-76
+update-rules.sh
+  h_0fdda36b8a632b 1-9
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "501335dafc4923af6c8dfecce300178633347f88",
+  "prompts": {},
+  "humans": {
+    "h_0fdda36b8a632b": {
+      "author": "Mourad <chnaiti.mourad@gmail.com>"
+    }
+  }
+}
