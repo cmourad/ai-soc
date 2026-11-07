@@ -1,0 +1,21 @@
+README.md
+  s_3c3a12db7e8fa3::t_f0b904879c9358 3,10,18-19,69,72,85,100,108
+SECURITY.md
+  s_3c3a12db7e8fa3::t_9df7f78a365dbc 11
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "4de02343265910ce37e2c9a1093c7c7d24995d13",
+  "prompts": {},
+  "sessions": {
+    "s_3c3a12db7e8fa3": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b29cd826-4a3c-4312-b0fe-c2c275e2021f",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Mourad <chnaiti.mourad@gmail.com>"
+    }
+  }
+}
