@@ -1,0 +1,74 @@
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: ["**"]
+
+jobs:
+  secret-scan:
+    name: Secret Scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Scan for private keys and JWTs
+        run: |
+          echo "Scanning for private keys..."
+          if git grep -EI "BEGIN [A-Z0-9 ]*PRIVATE KEY" -- ':!node_modules'; then
+            echo "::error::Private key detected in tracked repository files!"
+            exit 1
+          fi
+
+          echo "Scanning for JWT tokens..."
+          if git grep -EI "eyJ[A-Za-z0-9_-]{15,}\.[A-Za-z0-9_-]{15,}\.[A-Za-z0-9_-]{15,}" -- ':!node_modules'; then
+            echo "::error::JWT token detected in tracked repository files!"
+            exit 1
+          fi
+
+          echo "Secret scan passed cleanly."
+
+  test-python:
+    name: Agent Unit Tests (Python 3.12)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Run agent unit tests
+        run: python3 -m unittest discover agent -p 'test_*.py'
+
+  test-console:
+    name: Console Checks & Tests (Node 24)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Install console dependencies
+        run: cd console && pnpm install --frozen-lockfile
+
+      - name: Run console check suite
+        run: cd console && pnpm check

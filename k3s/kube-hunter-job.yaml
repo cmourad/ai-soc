@@ -1,0 +1,17 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: kube-hunter
+  namespace: attack-lab
+spec:
+  backoffLimit: 0
+  template:
+    metadata:
+      name: kube-hunter
+    spec:
+      hostNetwork: true
+      restartPolicy: Never
+      containers:
+        - name: kube-hunter
+          image: docker.io/aquasec/kube-hunter:latest
+          command: ["kube-hunter", "--pod", "--report", "json"]

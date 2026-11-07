@@ -1,0 +1,64 @@
+[Unit]
+Description=AI SOC triage agent (Suricata -> Qwen -> nftables)
+After=network-online.target docker.service aisoc-process-helper.service
+Wants=network-online.target aisoc-process-helper.service
+# eve.json and nothing else lives here; without this a late/absent disk makes
+# Restart=always crash-loop forever instead of waiting
+RequiresMountsFor=/opt/aisoc
+
+[Service]
+# runs from the root-owned tree, never from the user-writable repo — see
+# scripts/deploy.sh. Publish changes with `sudo scripts/deploy.sh`.
+ExecStart=/usr/bin/python3 /usr/local/libexec/aisoc/agent/aisoc.py run
+Restart=always
+RestartSec=5
+
+# BASE is derived from the script path, so the repo-relative defaults have to
+# be named explicitly now that the code no longer runs out of the repo
+Environment=AISOC_EVE=/opt/aisoc/suricata/logs/eve.json,/opt/aisoc/suricata/logs-vpn/eve.json
+# STUN noise is suppressed at the sensor (suricata/conf/threshold.config), so
+# severity 3 is affordable; at severity 2 this agent triaged nothing at all
+Environment=AISOC_MAX_SEVERITY=3
+# auditd is installed (2026-08-24, attack-lab Phase 1); host events flow from
+# aisoc-host-events.service into this JSONL. Note: polling it costs a 1s sleep
+# per main-loop iteration, capping the agent near 1 event/sec — accepted.
+Environment=AISOC_HOST_EVENTS=/var/lib/aisoc-host-events/host-events.jsonl
+# Filesystem mode is only a first gate. The agent also verifies SO_PEERCRED and
+# accepts mutations exclusively from the dedicated core UID.
+Environment=AISOC_CONTROL_GROUP=aisoc-control
+Environment=AISOC_CONTROL_USERS=aisoc-core
+
+# least privilege: nft only needs CAP_NET_ADMIN over netlink, nothing needs root
+User=aisoc
+Group=aisoc
+SupplementaryGroups=aisoc-control
+AmbientCapabilities=CAP_NET_ADMIN
+CapabilityBoundingSet=CAP_NET_ADMIN
+NoNewPrivileges=yes
+
+# writable state is exactly /var/lib/aisoc; code and eve.json are read-only
+StateDirectory=aisoc
+# /run/aisoc holds the control socket; systemd creates and reaps it per start
+RuntimeDirectory=aisoc
+UMask=0077
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+
+ProtectKernelModules=yes
+ProtectKernelTunables=yes
+ProtectKernelLogs=yes
+ProtectControlGroups=yes
+ProtectClock=yes
+ProtectHostname=yes
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6 AF_NETLINK
+RestrictNamespaces=yes
+RestrictRealtime=yes
+RestrictSUIDSGID=yes
+LockPersonality=yes
+MemoryDenyWriteExecute=yes
+SystemCallFilter=@system-service
+SystemCallErrorNumber=EPERM
+
+[Install]
+WantedBy=multi-user.target

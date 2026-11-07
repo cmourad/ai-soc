@@ -1,0 +1,47 @@
+[Unit]
+Description=AI SOC allowlisted sensor control helper
+After=docker.service k3s.service
+Requires=docker.service
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 /usr/local/libexec/aisoc/sensor-control-helper.py
+Restart=always
+RestartSec=3
+Environment=AISOC_COMPOSE_FILE=/opt/aisoc/compose.yml
+Environment=AISOC_KUBECONFIG=/etc/rancher/k3s/kubeconfig
+Environment=AISOC_SENSOR_CONTROL_USER=aisoc-core
+Environment=AISOC_SENSOR_CONTROL_GROUP=aisoc-control
+Environment=AISOC_PIHOLE_RESOLVER=/usr/local/libexec/aisoc/pihole-resolver.py
+RuntimeDirectory=aisoc-sensor-control
+RuntimeDirectoryMode=0750
+UMask=0077
+
+# Docker and cluster control are inherently privileged. Keep this process tiny:
+# it accepts two allowlisted Compose sensors, the Pi-hole Deployment, two
+# resolver modes, and nothing from any UID other than aisoc-core.
+User=root
+Group=aisoc-control
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+ProtectKernelModules=yes
+ProtectKernelTunables=yes
+ProtectKernelLogs=yes
+ProtectControlGroups=yes
+ProtectClock=yes
+ProtectHostname=yes
+# AF_UNIX reaches the Docker and D-Bus sockets; AF_NETLINK is what `ip` needs
+# to read the Wi-Fi address the resolver route is built from.
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6 AF_NETLINK
+RestrictNamespaces=yes
+RestrictRealtime=yes
+RestrictSUIDSGID=yes
+LockPersonality=yes
+MemoryDenyWriteExecute=yes
+SystemCallFilter=@system-service
+SystemCallErrorNumber=EPERM
+
+[Install]
+WantedBy=multi-user.target

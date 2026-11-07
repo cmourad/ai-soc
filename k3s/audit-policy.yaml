@@ -1,0 +1,80 @@
+# k3s API-server audit policy (docs/reference/attack-lab.md).
+#
+# Install: sudo install -m 0644 k3s/audit-policy.yaml /etc/rancher/k3s/audit-policy.yaml
+#          sudo systemctl restart k3s
+#
+# First matching rule wins, so the None rules come first, then Request, then the
+# Metadata catch-all.
+#
+# Level discipline matters more than it looks: platform-alloy tails this file
+# into Loki, so anything logged at Request level is replicated out of etcd into
+# a log store with entirely different access control. Request is therefore
+# reserved for objects whose *body* is the evidence — role rules, token audience
+# and expiry — and never used for objects whose body is a credential.
+apiVersion: audit.k8s.io/v1
+kind: Policy
+# RequestReceived doubles every entry and carries no outcome.
+omitStages:
+  - RequestReceived
+rules:
+  # --- noise floor -----------------------------------------------------------
+  # Control-plane bookkeeping. Excluded by identity *and* verb, so a compromised
+  # component doing anything other than reading still lands in the catch-all.
+  - level: None
+    users:
+      - system:kube-scheduler
+      - system:kube-controller-manager
+      - system:kube-proxy
+      - system:apiserver
+    verbs: ["get", "list", "watch"]
+  - level: None
+    resources:
+      - group: "coordination.k8s.io"
+        resources: ["leases"]
+    verbs: ["get", "update"]
+  - level: None
+    nonResourceURLs: ["/healthz*", "/readyz*", "/livez*", "/version", "/metrics"]
+
+  # --- credential access -----------------------------------------------------
+  # Metadata, deliberately. Who read or wrote which Secret, when, from where —
+  # that is the detection. The value is not evidence, it is a liability: at
+  # Request level every Secret write body would be shipped to Loki in clear.
+  - level: Metadata
+    resources:
+      - group: ""
+        resources: ["secrets", "configmaps"]
+
+  # --- authority changes -----------------------------------------------------
+  # Here the body IS the evidence: which verbs on which resources were granted,
+  # and to whom. This is the S1/S2 detection surface.
+  - level: Request
+    resources:
+      - group: "rbac.authorization.k8s.io"
+        resources: ["roles", "rolebindings", "clusterroles", "clusterrolebindings"]
+      - group: ""
+        resources: ["serviceaccounts", "serviceaccounts/token"]
+      - group: "admissionregistration.k8s.io"
+        resources: ["validatingadmissionpolicies", "validatingadmissionpolicybindings",
+                    "validatingwebhookconfigurations", "mutatingwebhookconfigurations"]
+
+  # --- impairing defenses (T1562) --------------------------------------------
+  # Deleting the sensor or its policies must be as loud as the intrusion it
+  # would hide.
+  - level: Request
+    resources:
+      - group: "cilium.io"
+        resources: ["tracingpolicies", "tracingpoliciesnamespaced"]
+      - group: "monitoring.coreos.com"
+        resources: ["prometheusrules"]
+      - group: "networking.k8s.io"
+        resources: ["networkpolicies"]
+
+  # --- escape and lateral-movement paths -------------------------------------
+  - level: Request
+    resources:
+      - group: ""
+        resources: ["pods/exec", "pods/attach", "pods/portforward", "pods/proxy",
+                    "nodes/proxy", "services/proxy"]
+
+  # --- everything else -------------------------------------------------------
+  - level: Metadata

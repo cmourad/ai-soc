@@ -1,0 +1,12 @@
+[Unit]
+Description=AI SOC console backend liveness probe
+# Only meaningful while the backend is supposed to be up.
+After=aisoc-console.service
+
+[Service]
+Type=oneshot
+# Root so it can restart the backend unit; the script itself only curls a
+# loopback health endpoint and calls systemctl. Because it is root and fires
+# every 30s, it must never exec a file the desktop user can write — run the
+# root-owned copy published by scripts/deploy.sh.
+ExecStart=/usr/local/libexec/aisoc/console-health.sh

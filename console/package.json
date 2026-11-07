@@ -1,0 +1,22 @@
+{
+  "name": "aisoc-console",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "concurrently -n server,ui -c cyan,magenta \"pnpm -F @aisoc/server dev\" \"pnpm -F @aisoc/ui dev\"",
+    "dev:alternate": "AISOC_PORT=14319 AISOC_REMOTE_PORT=14320 VITE_AISOC_API=http://127.0.0.1:14319 concurrently -n server,ui -c cyan,magenta \"pnpm -F @aisoc/server dev\" \"pnpm -F @aisoc/ui dev\"",
+    "dev:app": "concurrently -n server,ui,electron -c cyan,magenta,yellow \"pnpm -F @aisoc/server dev\" \"pnpm -F @aisoc/ui dev\" \"pnpm -F @aisoc/desktop dev\"",
+    "build:server": "node scripts/build-server.mjs",
+    "build": "pnpm build:server && pnpm -F @aisoc/ui build",
+    "start": "pnpm -F @aisoc/server start",
+    "app": "pnpm build && concurrently -n server,electron -c cyan,yellow \"pnpm -F @aisoc/server start\" \"pnpm -F @aisoc/desktop start\"",
+    "test": "node_modules/.pnpm/node_modules/.bin/tsx --test \"server/src/**/*.test.ts\" \"ui/src/**/*.test.ts\" && python3 -m unittest discover ../agent -p 'test_*.py'",
+    "check": "biome check . && tsc -b --noEmit server ui shared && pnpm test"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.3.14",
+    "concurrently": "^9.2.1",
+    "esbuild": "^0.25.12",
+    "typescript": "^5.9.3"
+  }
+}

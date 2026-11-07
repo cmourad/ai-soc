@@ -1,0 +1,11 @@
+[Unit]
+Description=AI SOC self-check (is the pipeline actually working?)
+After=network-online.target docker.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+# root: reads the container list, the agent's 0600 state, and the 0750 ruleset
+EnvironmentFile=-/etc/aisoc-digest.env
+ExecStart=/usr/bin/python3 /usr/local/libexec/aisoc/scripts/watchdog.py
+TimeoutStartSec=120

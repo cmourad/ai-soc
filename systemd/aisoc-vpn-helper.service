@@ -1,0 +1,25 @@
+[Unit]
+Description=AI SOC WireGuard privilege boundary
+After=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 /usr/local/libexec/aisoc/agent/vpn_helper.py
+User=root
+Group=aisoc-control
+RuntimeDirectory=aisoc-vpn
+StateDirectory=aisoc-vpn
+ReadWritePaths=/var/lib/aisoc-vpn
+UMask=0077
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6 AF_NETLINK
+RestrictNamespaces=yes
+RestrictSUIDSGID=yes
+LockPersonality=yes
+SystemCallFilter=@system-service
+SystemCallErrorNumber=EPERM
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,66 @@
+# Two sensors, two vantage points.
+#
+# wlp7s0 is the physical NIC. While the WireGuard tunnel (aisoc0) holds the
+# default route, everything this host sends is already ciphertext by the time it
+# gets there — the only plaintext ever observed on it was tailscale NAT
+# traversal. aisoc0 is where this host's real traffic is readable, before
+# encryption. Neither interface alone gives coverage, so run both and let the
+# agent multiplex the two eve.json streams (AISOC_EVE takes a comma-separated
+# list).
+#
+# The tunnel sensor is allowed to fail: if aisoc0 is absent Suricata exits and
+# docker retries, which is why it is a separate container. Putting `-i aisoc0`
+# on the primary would turn "VPN is down" into "no sensor at all".
+
+x-suricata: &suricata
+  # Locally verified 7.0 image. Upgrades are an explicit digest change reviewed
+  # with release notes, not an implicit pull of a mutable tag.
+  image: jasonish/suricata@sha256:8c04a9e00770a7901767b27ea7db9542e1181ead4125bbf4ff7301baba0fc37b
+  network_mode: host
+  cap_add:
+    - NET_ADMIN
+    - NET_RAW
+    - SYS_NICE
+  security_opt:
+    - no-new-privileges:true
+  restart: unless-stopped
+  stop_grace_period: 30s
+  healthcheck:
+    test: ["CMD-SHELL", "test -s /var/log/suricata/stats.log && find /var/log/suricata/stats.log -mmin -3 | grep -q ."]
+    interval: 60s
+    timeout: 5s
+    retries: 3
+    start_period: 60s
+  logging:
+    driver: json-file
+    options: { max-size: "50m", max-file: "3" }
+
+services:
+  suricata:
+    <<: *suricata
+    container_name: aisoc-suricata
+    # stock suricata.yaml ships threshold-file commented out, so point at it
+    # explicitly. Mounted outside /etc/suricata: the image entrypoint chowns
+    # that directory and a read-only mount there crash-loops the container.
+    command: -i wlp7s0 --set threshold-file=/etc/aisoc/threshold.config
+    volumes:
+      - ./suricata/logs:/var/log/suricata
+      - ./suricata/rules:/var/lib/suricata
+      - ./suricata/conf:/etc/aisoc:ro
+    mem_limit: 3g
+    pids_limit: 512
+
+  suricata-vpn:
+    <<: *suricata
+    container_name: aisoc-suricata-vpn
+    # tunnel traffic is a fraction of line rate; don't hand it 28 detect threads
+    command: >
+      -i aisoc0
+      --set threshold-file=/etc/aisoc/threshold.config
+      --set threading.detect-thread-ratio=0.15
+    volumes:
+      - ./suricata/logs-vpn:/var/log/suricata
+      - ./suricata/rules:/var/lib/suricata
+      - ./suricata/conf:/etc/aisoc:ro
+    mem_limit: 2g
+    pids_limit: 512

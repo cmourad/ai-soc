@@ -1,0 +1,2 @@
+# IPs the agent must never block, one per line. Comments allowed.
+# Own IPs, gateway, DNS, loopback, and docker ranges are protected automatically.

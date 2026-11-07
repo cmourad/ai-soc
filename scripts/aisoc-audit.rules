@@ -1,0 +1,25 @@
+# AI SOC host-signal audit rules — install as /etc/audit/rules.d/aisoc.rules
+# then restart auditd. Keys are consumed by scripts/audit_tail.py.
+
+# privilege escalation syscalls by a non-root login user
+-a always,exit -F arch=b64 -F auid>=1000 -F auid!=4294967295 -S setuid -S setgid -S setreuid -S setresuid -S setregid -S setresgid -k priv_esc
+
+# non-root user executing something as root (su/sudo usage)
+-a always,exit -F arch=b64 -F euid=0 -F auid>=1000 -F auid!=4294967295 -S execve -k root_exec
+
+# credential / identity files
+-w /etc/passwd -p wa -k identity
+-w /etc/shadow -p wa -k identity
+-w /etc/sudoers -p wa -k identity
+
+# scheduled task tampering
+-w /etc/crontab -p wa -k cron_change
+-w /etc/cron.d -p wa -k cron_change
+-w /etc/cron.daily -p wa -k cron_change
+-w /etc/cron.hourly -p wa -k cron_change
+
+# sshd configuration
+-w /etc/ssh/sshd_config -p wa -k sshd_config
+
+# failed/successful login accounting
+-w /var/log/btmp -p wa -k logins

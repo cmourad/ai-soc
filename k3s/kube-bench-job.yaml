@@ -1,0 +1,61 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: kube-bench
+  namespace: attack-lab
+spec:
+  backoffLimit: 0
+  template:
+    metadata:
+      name: kube-bench
+    spec:
+      hostPID: true
+      restartPolicy: Never
+      containers:
+        - name: kube-bench
+          image: docker.io/aquasec/kube-bench:latest
+          command: ["kube-bench", "run", "--benchmark", "cis-1.10"]
+          volumeMounts:
+            - name: var-lib-kubelet
+              mountPath: /var/lib/kubelet
+              readOnly: true
+            - name: etc-systemd
+              mountPath: /etc/systemd
+              readOnly: true
+            - name: etc-kubernetes
+              mountPath: /etc/kubernetes
+              readOnly: true
+            - name: k3s-agent-etc
+              mountPath: /var/lib/rancher/k3s/agent/etc
+              readOnly: true
+            - name: k3s-server-tls
+              mountPath: /var/lib/rancher/k3s/server/tls
+              readOnly: true
+            - name: k3s-server-manifests
+              mountPath: /var/lib/rancher/k3s/server/manifests
+              readOnly: true
+            - name: etc-rancher
+              mountPath: /etc/rancher
+              readOnly: true
+      volumes:
+        - name: var-lib-kubelet
+          hostPath:
+            path: /var/lib/kubelet
+        - name: etc-systemd
+          hostPath:
+            path: /etc/systemd
+        - name: etc-kubernetes
+          hostPath:
+            path: /etc/kubernetes
+        - name: k3s-agent-etc
+          hostPath:
+            path: /var/lib/rancher/k3s/agent/etc
+        - name: k3s-server-tls
+          hostPath:
+            path: /var/lib/rancher/k3s/server/tls
+        - name: k3s-server-manifests
+          hostPath:
+            path: /var/lib/rancher/k3s/server/manifests
+        - name: etc-rancher
+          hostPath:
+            path: /etc/rancher

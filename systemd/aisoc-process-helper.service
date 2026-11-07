@@ -1,0 +1,35 @@
+[Unit]
+Description=AI SOC socket process attribution helper
+After=network.target
+
+[Service]
+Type=simple
+Group=aisoc-control
+ExecStart=/usr/bin/python3 /usr/local/libexec/aisoc/agent/process_helper.py
+Restart=always
+RestartSec=3
+Environment=AISOC_PROCESS_USER=aisoc
+RuntimeDirectory=aisoc-process
+UMask=0077
+
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+ProtectKernelModules=yes
+ProtectKernelTunables=yes
+ProtectKernelLogs=yes
+ProtectControlGroups=yes
+ProtectClock=yes
+ProtectHostname=yes
+RestrictAddressFamilies=AF_UNIX
+RestrictNamespaces=yes
+RestrictRealtime=yes
+RestrictSUIDSGID=yes
+LockPersonality=yes
+MemoryDenyWriteExecute=yes
+SystemCallFilter=@system-service
+SystemCallErrorNumber=EPERM
+
+[Install]
+WantedBy=multi-user.target

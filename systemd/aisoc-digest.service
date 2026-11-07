@@ -1,0 +1,10 @@
+[Unit]
+Description=AI SOC daily LLM digest (decisions.jsonl -> summary push)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=aisoc
+EnvironmentFile=-/etc/aisoc-digest.env
+ExecStart=/usr/bin/python3 /usr/local/libexec/aisoc/scripts/daily_digest.py

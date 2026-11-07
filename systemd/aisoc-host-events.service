@@ -1,0 +1,24 @@
+[Unit]
+Description=AI SOC host-event bridge (auditd -> triage JSONL)
+After=auditd.service network-online.target
+Wants=network-online.target
+# nothing to tail without auditd; refuse to start rather than spin in a
+# retry loop reporting active. (Must live in [Unit]: Condition* keys are
+# ignored in [Service].)
+ConditionPathExists=/var/log/audit/audit.log
+
+[Service]
+Type=simple
+# runs as root: root-owned copy only, never the user-writable repo path.
+# Publish changes with `sudo scripts/deploy.sh`.
+ExecStart=/usr/bin/python3 /usr/local/libexec/aisoc/scripts/audit_tail.py
+Restart=always
+RestartSec=5
+# must read /var/log/audit/audit.log and write the host-events stream; a
+# separate StateDirectory so root's ownership never clobbers /var/lib/aisoc
+StateDirectory=aisoc-host-events
+ProtectSystem=strict
+ProtectHome=yes
+
+[Install]
+WantedBy=multi-user.target

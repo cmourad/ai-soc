@@ -1,0 +1,11 @@
+[Unit]
+Description=Run the AI SOC self-check every 15 minutes
+
+[Timer]
+OnBootSec=3min
+OnUnitActiveSec=15min
+# a missed window (suspend, reboot) still gets checked rather than skipped
+Persistent=true
+
+[Install]
+WantedBy=timers.target

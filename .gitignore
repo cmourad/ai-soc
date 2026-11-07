@@ -1,0 +1,19 @@
+# secrets and live state — never commit
+.env
+console/data/
+suricata/logs/
+suricata/logs-vpn/
+suricata/rules/
+
+# build output and caches
+node_modules/
+console/ui/dist/
+console/dist/
+__pycache__/
+*.pyc
+*.tsbuildinfo
+.pytest_cache/
+timeout
+
+# RIR downloads build_geo_table.py caches between runs
+.geo-cache/

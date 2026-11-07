@@ -1,0 +1,76 @@
+# install as /etc/logrotate.d/aisoc
+#
+# Nothing rotated these before: eve.json reached 936 MB, stats.log 378 MB,
+# fast.log 124 MB — 1.4 GB and growing on a volume with 124 GB free.
+#
+# copytruncate rather than create+signal: the agent's tailer already detects
+# truncation (st_size < tell) and reopens, whereas a create-style rotation
+# leaves Suricata writing to an unlinked inode until it is signalled.
+
+/opt/aisoc/suricata/logs/eve.json
+/opt/aisoc/suricata/logs-vpn/eve.json
+{
+    size 200M
+    rotate 4
+    compress
+    delaycompress
+    missingok
+    notifempty
+    copytruncate
+    # Without this, logrotate refuses the whole stanza: the parent directory is
+    # inside the repo and group-writable by the desktop user, which it treats as
+    # insecure unless told whose privileges to rotate under. It has been
+    # silently skipping these since the config was installed on 2026-08-06 —
+    # which is why eve.json reached 936 MB despite being "rotated".
+    su root root
+}
+
+/opt/aisoc/suricata/logs/fast.log
+/opt/aisoc/suricata/logs/stats.log
+/opt/aisoc/suricata/logs/suricata.log
+/opt/aisoc/suricata/logs-vpn/fast.log
+/opt/aisoc/suricata/logs-vpn/stats.log
+/opt/aisoc/suricata/logs-vpn/suricata.log
+{
+    size 50M
+    rotate 3
+    compress
+    delaycompress
+    missingok
+    notifempty
+    copytruncate
+    su root root
+}
+
+# the audit trail — keep a year, it is small and it is the record of what the
+# agent actually did
+/var/lib/aisoc/decisions.jsonl
+{
+    monthly
+    rotate 12
+    compress
+    delaycompress
+    missingok
+    notifempty
+    copytruncate
+    su aisoc aisoc
+    create 0600 aisoc aisoc
+}
+
+# Collector spools. The cluster collector alone writes ~50 MB an hour, so these
+# need a tighter budget than anything else here — unrotated, the spool was on
+# course for 1.2 GB a day. Both readers (the console tailer and the agent)
+# detect truncation and reopen, which is what makes copytruncate safe; a
+# create-style rotation would leave the root collector writing to an unlinked
+# inode with nothing reading it.
+/var/lib/aisoc-host-events/cluster-events.jsonl
+/var/lib/aisoc-host-events/host-events.jsonl
+{
+    size 50M
+    rotate 2
+    compress
+    delaycompress
+    missingok
+    notifempty
+    copytruncate
+}

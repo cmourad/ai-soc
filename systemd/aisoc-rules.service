@@ -1,0 +1,10 @@
+[Unit]
+Description=Update Suricata ET Open rules
+Requires=docker.service
+After=docker.service
+
+[Service]
+Type=oneshot
+# root-owned copy: this runs as root, and the repo is writable by the desktop
+# user. Publish changes with `sudo scripts/deploy.sh`.
+ExecStart=/usr/local/libexec/aisoc/update-rules.sh

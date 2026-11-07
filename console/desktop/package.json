@@ -1,0 +1,13 @@
+{
+  "name": "@aisoc/desktop",
+  "version": "0.0.0",
+  "private": true,
+  "main": "main.cjs",
+  "scripts": {
+    "dev": "AISOC_DEV=1 electron . --disable-gpu",
+    "start": "electron ."
+  },
+  "devDependencies": {
+    "electron": "^33.3.1"
+  }
+}

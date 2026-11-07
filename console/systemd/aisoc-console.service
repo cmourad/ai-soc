@@ -1,0 +1,75 @@
+[Unit]
+Description=AI SOC console backend (ingest, triage pipeline, WebSocket API)
+# Needs the network up, and both the Suricata sensor (eve.json) and the local
+# model servers it triages against. docker.service covers the sensor + codex proxy.
+After=network-online.target docker.service aisoc-sensor-control.service
+Wants=network-online.target aisoc-sensor-control.service
+
+[Service]
+Type=simple
+# Dedicated service identity with no interactive login or sudo policy. The
+# release tree is root-owned and contains a bundled server artifact, so neither
+# repository edits nor writable node_modules can change the running process.
+User=aisoc-core
+Group=aisoc-core
+# Read/write the docker socket: the Services view drives `docker compose` and the
+# Pentest runner launches the ZAP scanner container. This is host-root-equivalent
+# access — the console is already a privileged local operator tool.
+SupplementaryGroups=docker
+WorkingDirectory=/opt/aisoc/current
+ExecStart=/usr/bin/node /opt/aisoc/current/console/dist/server/index.js
+
+# A crash (unhandled rejection, OOM) is brought straight back. The backend is
+# async with a hard AbortSignal timeout on every model/Telegram/SMTP call, so a
+# hung dependency cannot stall the event loop — the failure mode that wedged the
+# synchronous Python agent does not apply here. Restart=always covers the rest.
+Restart=always
+RestartSec=5
+
+# Bind loopback only; the desktop app / tunnel reach it locally.
+Environment=AISOC_PORT=4319
+Environment=NODE_ENV=production
+# Timestamps are rendered with toLocale*, so an unset TZ here prints the whole
+# console in UTC and disagrees with everything else on the box.
+Environment=TZ=UTC
+Environment=AISOC_DATA_DIR=/var/lib/aisoc-core
+Environment=AISOC_CONTROL_SOCKET=/run/aisoc/control.sock
+Environment=AISOC_BOOTSTRAP_FILE=/var/lib/aisoc-core/bootstrap.key
+Environment=AISOC_CONSOLE_CONTROL_SOCKET=/run/aisoc-console/control.sock
+Environment=AISOC_SENSOR_CONTROL_SOCKET=/run/aisoc-sensor-control/control.sock
+Environment=AISOC_CLI_DIR=/opt/aisoc/current/console/bin
+Environment=AISOC_TERMINAL_CWD=/opt/aisoc/current
+# ProtectHome hides /home, so the docker CLI's default ~/.docker is unreadable and
+# it logs a warning on every invocation. Point it at the writable state dir.
+Environment=DOCKER_CONFIG=/var/lib/aisoc-core/.docker
+
+StateDirectory=aisoc-core
+RuntimeDirectory=aisoc-console
+RuntimeDirectoryMode=0700
+UMask=0077
+
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+ProtectKernelModules=yes
+ProtectKernelTunables=yes
+ProtectKernelLogs=yes
+ProtectControlGroups=yes
+ProtectClock=yes
+ProtectHostname=yes
+# AF_NETLINK is needed only for Node's unprivileged networkInterfaces() query,
+# which lets Compass recognize temporary IPv6 addresses. No network capability
+# is granted; route/firewall mutation remains in the separate enforcer.
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6 AF_NETLINK
+RestrictNamespaces=yes
+RestrictRealtime=yes
+RestrictSUIDSGID=yes
+LockPersonality=yes
+# Node/V8 requires executable JIT pages; keep the remaining syscall and
+# filesystem sandboxing controls below instead of forcing an unusable service.
+SystemCallFilter=@system-service
+SystemCallErrorNumber=EPERM
+
+[Install]
+WantedBy=multi-user.target

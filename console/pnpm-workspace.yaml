@@ -1,0 +1,9 @@
+packages:
+  - shared
+  - server
+  - ui
+  - desktop
+allowBuilds:
+  electron: true
+  esbuild: true
+  node-pty: true

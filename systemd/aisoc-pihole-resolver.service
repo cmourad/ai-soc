@@ -1,0 +1,42 @@
+[Unit]
+Description=Route host DNS through the local Pi-hole sensor
+# Ordered after the tunnel so a boot-time wg-quick cannot install its resolver
+# on top of ours, but deliberately not bound to it: Pi-hole answers on the LAN
+# whether or not the VPN is up, and losing the tunnel must not drop the host
+# back to the router's DNS. A later VPN reconnect re-installs its own ~. route,
+# which `aisocctl dns resolver --apply --confirm` clears again.
+After=k3s.service systemd-resolved.service network-online.target wg-quick@aisoc0.service
+Wants=k3s.service network-online.target
+Requires=systemd-resolved.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/bin/python3 /usr/local/libexec/aisoc/pihole-resolver.py apply
+ExecStop=/usr/bin/python3 /usr/local/libexec/aisoc/pihole-resolver.py revert
+Restart=on-failure
+RestartSec=5
+
+User=root
+Group=root
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+ProtectKernelModules=yes
+ProtectKernelTunables=yes
+ProtectKernelLogs=yes
+ProtectControlGroups=yes
+ProtectClock=yes
+ProtectHostname=yes
+RestrictAddressFamilies=AF_NETLINK AF_UNIX
+RestrictNamespaces=yes
+RestrictRealtime=yes
+RestrictSUIDSGID=yes
+LockPersonality=yes
+MemoryDenyWriteExecute=yes
+SystemCallFilter=@system-service
+SystemCallErrorNumber=EPERM
+
+[Install]
+WantedBy=multi-user.target
