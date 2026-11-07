@@ -8,7 +8,7 @@ The pipeline ingests untrusted, attacker-controlled data (packet payloads, HTTP 
 
 Key protections against hostile inputs:
 - **Prompt Injection Defense**: Wire-derived strings are sanitized (ANSI and control characters stripped, lengths bounded) and isolated under explicit untrusted data keys in model prompts. High-severity alerts require explicit confirmation before demotion.
-- **Fail-Safe Enforcer Guardrails**: Automated response logic (`agent/guard.py`) validates candidate IP targets against non-bypassable host, gateway, DNS resolver, loopback, multicast, and RFC 1918 bridge addresses before any block can be submitted to nftables.
+- **Enforcer guardrails**: Automated response logic (`agent/guard.py`) rejects candidate IP targets matching the host, gateway, DNS resolver, loopback, multicast, and RFC 1918 bridge addresses before any block can be submitted to nftables.
 - **Time-Bounded Blast Radius**: All nftables set entries carry explicit auto-expiration timeouts (1 hour for initial detections, escalating to 24 hours and 30 days for repeated offenses). An automated block rate ceiling limits mutations to 30 operations per hour.
 
 ## Trust Boundaries & Privilege Model

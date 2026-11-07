@@ -1,13 +1,13 @@
 # ai-soc
 
-Autonomous host-level detection, local LLM triage, and self-healing nftables firewall containment.
+Home-lab SOC: Suricata and host telemetry triaged by a local LLM, contained with auto-expiring nftables blocks.
 
 [![CI](https://github.com/cmourad/ai-soc/actions/workflows/ci.yml/badge.svg)](https://github.com/cmourad/ai-soc/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 ## Why this exists
 
-Production SIEM and SOAR stacks demand enterprise operational overhead, while basic honeypot and firewall scripts lack contextual awareness. `ai-soc` bridges this gap for workstation and home-lab defense by pairing deep network and host telemetry with offline LLM triage. Enforcement is safe by construction: rather than granting broad automation unconstrained host execution, all firewall mutations route through a dedicated enforcer daemon that commits auto-expiring, escalating `nftables` blocks guarded by non-bypassable network allowlists. The entire pipeline executes locally without transmitting raw telemetry or alerts to external cloud services.
+A SIEM/SOAR stack is too heavy for one workstation and a home lab; firewall scripts alone have no context. `ai-soc` pairs network and host telemetry with a local LLM that triages each alert, then limits what that decision can do: every firewall change goes through one enforcer daemon, which checks an allowlist and writes `nftables` blocks that expire on their own. A wrong call costs at most a timed block, not a broken network. Triage runs against a model on loopback, so alerts are not sent to a cloud API by default.
 
 ![AI SOC Console Overview](docs/media/overview.png)
 
@@ -15,8 +15,8 @@ Production SIEM and SOAR stacks demand enterprise operational overhead, while ba
 
 - **Multi-vantage sensing**: Captures physical wire traffic and WireGuard tunnel interfaces via Suricata IDS, host syscall activity via `auditd`, and container executions via Kubernetes eBPF (Tetragon).
 - **Hierarchical triage engine**: Evaluates telemetry through deterministic reputation policy before escalating ambiguous signals to tiered local LLM models (e.g. Qwen via llama.cpp or Ollama).
-- **Safe-by-construction containment**: Enforces IP containment via auto-expiring `nftables` sets (1 hour first strike, escalating on recurrence) to guarantee containment errors recover automatically without operator intervention.
-- **Strict boundary guardrails**: Hardened enforcer enforces immutable loopback, gateway, DNS resolver, and RFC 1918 / RFC 8375 home network allowlists before committing any packet filtering changes.
+- **Safe-by-construction containment**: Enforces IP containment via auto-expiring `nftables` sets (1 hour first strike, escalating on recurrence) so a mistaken block lifts itself without operator intervention.
+- **Boundary guardrails**: Before any block, the enforcer rejects loopback, the gateway, DNS resolvers, the host's own addresses, and configured home networks.
 - **Incident correlation & MITRE mapping**: Correlates related alerts and process events into structured incident narratives mapped to ATT&CK tactics, techniques, and confidence scores.
 - **Real-time analyst console**: Fastify and React web console featuring live alert streaming, incident triage queues, Network Compass flow analysis, and drill simulations.
 
@@ -66,10 +66,10 @@ flowchart TD
 
 ## Engineering highlights
 
-- **Single nftables writer behind AF_UNIX socket**: All firewall state modifications are isolated to an unprivileged Python agent with `CAP_NET_ADMIN` communicating across an AF_UNIX socket authenticated via `SO_PEERCRED`.
+- **Single nftables writer behind AF_UNIX socket**: Only the Python agent, running as a dedicated user with `CAP_NET_ADMIN` and nothing else, writes nftables. Other components ask over an AF_UNIX socket that checks callers with `SO_PEERCRED`.
 - **Policy → fast → full LLM triage tiers**: Deterministic threat intelligence filters obvious noise and known-bad IPs instantly; lightweight fast-tier heuristics batch low-urgency events; high-urgency anomalies escalate to a full LLM model.
 - **Auto-expiring escalating blocks**: Block rules are committed to `nftables` sets with native timeouts (1 hour for first strikes, escalating on repeats) so false positives self-heal without manual operator recovery.
-- **Guard allowlist validation**: Dedicated `Guard` validator asserts destination safety against hardcoded loopback, active gateway, local DNS resolvers, and RFC 1918 / RFC 8375 subnets before execution.
+- **Guard allowlist validation**: A `Guard` refuses targets that would cut the host off (loopback, gateway, DNS, own addresses, configured home subnets), whatever the model returned.
 - **Minimised cluster telemetry**: Kubernetes and host eBPF tailers drop request/response payloads at ingest, forwarding only normalized process trees, namespaces, and security-relevant metadata.
 - **Adversary-emulation coverage ledger**: Detections and response playbooks are validated against reproducible attack drills (c2 beaconing, ransomware mass writes, credential dumping) tracked in a structured ATT&CK matrix.
 
@@ -82,7 +82,7 @@ cd console && AISOC_DEMO=1 pnpm dev
 ```
 
 Once running:
-- Open `http://localhost:5173` (Vite dev server proxying the Fastify API).
+- Open `http://127.0.0.1:5319` (Vite dev server; the Fastify API listens on `:4319`).
 - The demo initializes with `ingest.source = "seed"`, generating background traffic and simulated adversary activity.
 - Interactive drills (C2 beaconing, ransomware staging, credential stuffing) can be triggered from the header to test correlation and response playbooks.
 
@@ -97,7 +97,7 @@ Once running:
 | `agent/` | Python daemon: log ingest, prompt synthesis, local LLM client, Guard filters, and `nftables` manager. |
 | `console/server/` | Fastify backend: normalization, detection engine, incident correlation, WebSocket bus, and local storage. |
 | `console/ui/` | React SPA: incident dashboard, alert feed, ATT&CK matrix, Network Compass, and drill runner. |
-| `console/shared/` | TypeScript domain types, Zod schemas, network CIDR helpers, and event contracts. |
+| `console/shared/` | TypeScript domain types, network CIDR helpers, and event contracts. |
 | `scripts/` | Host sensors (`audit_tail.py`, `cluster_tail.py`), deployment automation, and tier benchmark evaluators. |
 | `systemd/` | Hardened Linux systemd service units with sandboxed security profiles. |
 | `k3s/` | Kubernetes audit logging policy configuration and security assessment manifests. |
@@ -105,7 +105,7 @@ Once running:
 
 ## Security
 
-See [SECURITY.md](SECURITY.md) for threat models and privilege tiers. The console service runs with `SupplementaryGroups=docker` to manage containerized sensors; on Linux hosts, access to the Docker socket is root-equivalent, so routing firewall mutations through the enforcer's control socket is an intentional architectural isolation boundary rather than a security virtualization barrier.
+See [SECURITY.md](SECURITY.md) for threat models and privilege tiers. The console service runs with `SupplementaryGroups=docker` to manage containerized sensors; on Linux hosts, access to the Docker socket is root-equivalent, so routing firewall mutations through the enforcer's control socket is a design boundary, not a privilege boundary. A compromised console could reach root through Docker.
 
 ## Further reading
 
